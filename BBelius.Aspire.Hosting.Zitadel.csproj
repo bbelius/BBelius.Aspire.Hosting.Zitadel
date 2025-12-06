@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <Description>Zitadel support for Aspire.</Description>
+	  <Title>Zitadel support for Aspire.</Title>
+	  <Copyright>n/a; AI-code</Copyright>
+    <SuppressFinalPackageVersion>true</SuppressFinalPackageVersion>
+    <Version>1.0.2-beta18</Version>
+	<PackageId>BBelius.Aspire.Hosting.Zitadel</PackageId>
+    <Authors>BBelius</Authors>
+    <Company>BBelius</Company>
+	<RepositoryUrl>https://github.com/bbelius/BBelius.Aspire.Hosting.Zitadel</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<PackageReleaseNotes>**IMPORTANT**
+This library was "vibe-coded" based on `Aspire.Hosting.Keycloak`.
+While being tested, no in-depth review has been done yet.
+Use at your own risk.
+	</PackageReleaseNotes>
+	<PackageTags>Aspire;OIDC;Zitadel;Auth</PackageTags>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <IncludeSymbols>True</IncludeSymbols>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" Version="13.0.1" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.0.1" />
+  </ItemGroup>
+
+    <ItemGroup>
+    <None Include="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
