@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: nuget-release
     permissions:
-      id-token: write  # Required for OIDC trusted publishing
+      id-token: write   # Required for OIDC trusted publishing
+      contents: read    # Required for checkout
 
     steps:
       - name: Checkout
