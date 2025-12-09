@@ -7,7 +7,7 @@
 	  <Title>Zitadel support for Aspire.</Title>
 	  <Copyright>n/a; AI-code</Copyright>
     <SuppressFinalPackageVersion>true</SuppressFinalPackageVersion>
-    <Version>1.0.2-beta18</Version>
+    <Version>1.0.2-beta19</Version>
 	<PackageId>BBelius.Aspire.Hosting.Zitadel</PackageId>
     <Authors>BBelius</Authors>
     <Company>BBelius</Company>

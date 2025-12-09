@@ -26,7 +26,9 @@ var postgres = builder.AddPostgres("postgres")
                       .WithDataVolume()
                       .AddDatabase("zitadel");
 
-var zitadel = builder.AddZitadel("zitadel", port: 8443)
+var masterKey = builder.AddParameter("zitadel-masterkey", secret: true);
+
+var zitadel = builder.AddZitadel("zitadel", masterKey, port: 8443)
                      .WithPostgres(postgres)
                      .WithDevCertificate();
 
@@ -34,7 +36,9 @@ var myService = builder.AddProject<Projects.MyService>()
                        .WithReference(zitadel);
 ```
 
-**Important:** Zitadel is configured to use **HTTPS only**. You must call either `WithDevCertificate()` or `WithTls()` to provide TLS certificates.
+**Important:**
+- Zitadel requires a **master key** parameter (exactly 32 characters) for encrypting secrets. This is a required parameter.
+- Zitadel is configured to use **HTTPS only**. You must call either `WithDevCertificate()` or `WithTls()` to provide TLS certificates.
 
 **Recommendation:** Use a stable port for the Zitadel resource (8443 in the example above). This avoids issues with browser cookies that persist OIDC tokens (which include the authority URL with port) beyond the lifetime of the AppHost.
 
@@ -70,7 +74,7 @@ Zitadel serves **HTTPS only**. You must configure TLS certificates using one of 
 The easiest way to configure TLS for local development:
 
 ```csharp
-var zitadel = builder.AddZitadel("zitadel", port: 8443)
+var zitadel = builder.AddZitadel("zitadel", masterKey, port: 8443)
                      .WithPostgres(postgres)
                      .WithDevCertificate();
 ```
@@ -117,17 +121,16 @@ After Zitadel starts:
 
 The configuration is stored in PostgreSQL and persists across restarts.
 
-## Custom Credentials
+## Custom Admin Credentials
 
-You can override the default credentials by providing custom parameters:
+You can override the default admin credentials by providing custom parameters:
 
 ```csharp
-var zitadelAdminPassword = builder.AddParameter("zitadel-admin-password", secret: true);
-var zitadelMasterKey = builder.AddParameter("zitadel-masterkey", secret: true);
+var masterKey = builder.AddParameter("zitadel-masterkey", secret: true);
+var adminPassword = builder.AddParameter("zitadel-admin-password", secret: true);
 
-var zitadel = builder.AddZitadel("zitadel", port: 8443,
-        adminPassword: zitadelAdminPassword,
-        masterKey: zitadelMasterKey)
+var zitadel = builder.AddZitadel("zitadel", masterKey, port: 8443,
+        adminPassword: adminPassword)
     .WithPostgres(postgres)
     .WithDevCertificate();
 ```

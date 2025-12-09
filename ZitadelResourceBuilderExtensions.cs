@@ -52,7 +52,7 @@ public static class ZitadelResourceBuilderExtensions
     /// <param name="port">The host port that the underlying container is bound to when running locally.</param>
     /// <param name="adminUsername">The parameter used as the admin username for the Zitadel resource. If <see langword="null"/> a default value will be used.</param>
     /// <param name="adminPassword">The parameter used as the admin password for the Zitadel resource. If <see langword="null"/> a default password will be used.</param>
-    /// <param name="masterKey">The parameter used as the master key for encryption. If <see langword="null"/> a default key will be generated. Must be exactly 32 characters.</param>
+    /// <param name="masterKey">The parameter used as the master key for encryption. Must be exactly 32 characters. This parameter is required.</param>
     /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
     /// <remarks>
     /// <para>
@@ -76,7 +76,9 @@ public static class ZitadelResourceBuilderExtensions
     /// var postgres = builder.AddPostgres("postgres")
     ///                       .AddDatabase("zitadel");
     ///
-    /// var zitadel = builder.AddZitadel("zitadel", port: 8443)
+    /// var masterKey = builder.AddParameter("zitadel-masterkey", secret: true);
+    ///
+    /// var zitadel = builder.AddZitadel("zitadel", port: 8443, masterKey: masterKey)
     ///                      .WithPostgres(postgres)
     ///                      .WithDevCertificate();
     ///
@@ -88,23 +90,20 @@ public static class ZitadelResourceBuilderExtensions
     public static IResourceBuilder<ZitadelResource> AddZitadel(
         this IDistributedApplicationBuilder builder,
         string name,
+        IResourceBuilder<ParameterResource> masterKey,
         int? port = null,
         IResourceBuilder<ParameterResource>? adminUsername = null,
-        IResourceBuilder<ParameterResource>? adminPassword = null,
-        IResourceBuilder<ParameterResource>? masterKey = null)
+        IResourceBuilder<ParameterResource>? adminPassword = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentException.ThrowIfNullOrEmpty(name);
+        ArgumentNullException.ThrowIfNull(masterKey);
 
         // Use Aspire's standard password parameter (stored in secrets)
         var passwordParameter = adminPassword?.Resource ??
             ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(builder, $"{name}-password", special: false);
 
-        // Master key must be exactly 32 characters - generate a secure key without special characters
-        var masterKeyParameter = masterKey?.Resource ??
-            ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(builder, $"{name}-masterkey", special: false);
-
-        var resource = new ZitadelResource(name, adminUsername?.Resource, passwordParameter, masterKeyParameter);
+        var resource = new ZitadelResource(name, adminUsername?.Resource, passwordParameter, masterKey.Resource);
 
         // Capture the port for use in the environment callback
         var externalPort = port;
